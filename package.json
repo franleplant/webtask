@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node index.js"
+    "start": "babel-node index.js",
+    "test": "babel-node test.js"
   },
   "author": "franleplant@gmail.com",
   "license": "MIT",
