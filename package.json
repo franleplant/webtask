@@ -2,16 +2,21 @@
   "name": "webtask",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "index.es5.js",
   "scripts": {
     "start": "babel-node index.js",
-    "test": "babel-node test.js"
+    "test": "mocha --compilers js:babel/register --ui bdd test.js",
+    "prepublish": "babel index.js --out-file index.compiled.js"
   },
   "author": "franleplant@gmail.com",
   "license": "MIT",
   "dependencies": {
     "babel": "^5.6.14",
-    "chalk": "^1.1.0",
     "superagent": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.4"
   }
 }
