@@ -18,29 +18,40 @@ const PATHNAME = '/api/run/';
  * @return {Function} Webtasks Runner for the specified container and host
  */
 export default function webtask(container, host = DEFAULT_HOST) {
-    let base = url.format({
-        protocol: PROTO,
-        host: host,
-        pathname: PATHNAME + container + '/'
-    });
 
     /**
-     * Run a webtask in the contextual container and domain.
      * @param {String} wt The name of the webtask you want to run
-     * @return {Promise}
+     * @return {Function}
      */
-    return function run(wt) {
-        return new Promise((resolve, reject) => {
-            request
-                .get(url.resolve(base, wt))
-                .end((err, res) => {
-                    if (!res.ok) {
-                        reject(res.text);
-                        return;
-                    }
+    return function runner(wt) {
 
-                    resolve(res.body);
-                })
-        });
+        /**
+         * @param {Object} params - a hash of all the parameters that you want to pass to the webtask
+         * @return {Promise}
+         */
+        return function run(params) {
+            let uri = url.format({
+                protocol: PROTO,
+                host: host,
+                pathname: url.resolve(PATHNAME + container + '/', wt),
+                query: params
+            });
+
+
+            console.log(uri)
+
+            return new Promise((resolve, reject) => {
+                request
+                    .get(uri)
+                    .end((err, res) => {
+                        if (!res.ok) {
+                            reject(res.text);
+                            return;
+                        }
+
+                        resolve(res.body);
+                    })
+            });
+        }
     }
 }

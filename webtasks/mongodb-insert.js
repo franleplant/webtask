@@ -15,9 +15,11 @@ module.exports = function(ctx, cb) {
             });
         },
         function insert(db, done) {
+            var data = ctx.data;
+            var user = { name: data.userName, email: data.userEmail, date: +new Date() };
             db
-                .collection('webtask')
-                .insertOne({ msg: 'Hey Mongo! on ' + (new Date()).toISOString() }, function (err, result) {
+                .collection('users')
+                .insertOne(user, function (err, result) {
                     if(err) return done(err);
 
                     done(null, result);
