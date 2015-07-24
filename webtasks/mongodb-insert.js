@@ -1,10 +1,21 @@
+"use latest";
+
 var MongoClient = require('mongodb').MongoClient;
 var waterfall   = require('async').waterfall;
 
-module.exports = function(ctx, cb) {
+/**
+ * The most important parameters, expected in `context.data` are:
+ *
+ * @param {String} MONGO_URL It should be passed as a `--secret`, it correspond to the connection
+ *          url for the db instance.
+ * @param {String} context.data.collection The name of the db collection where you want to insert the data
+ * @param {Object} context.data.dataToInser Arbirtrary mongodb valid data to insert in the collection
+ */
+module.exports = function(context, webtaskReturn) {
 
-    var MONGO_URL = ctx.data.MONGO_URL;
-    if (!MONGO_URL) return cb(new Error('MONGO_URL secret is missing'))
+    let { MONGO_URL, collection, dataToInsert} = context.data;
+
+    if (!MONGO_URL) return webtaskReturn(new Error('MONGO_URL secret is missing'))
 
     waterfall([
         function connect_to_db(done) {
@@ -15,15 +26,13 @@ module.exports = function(ctx, cb) {
             });
         },
         function insert(db, done) {
-            var data = ctx.data;
-            var user = { name: data.userName, email: data.userEmail, date: +new Date() };
             db
-                .collection('users')
-                .insertOne(user, function (err, result) {
+                .collection(collection)
+                .insertOne(dataToInsert, function (err, result) {
                     if(err) return done(err);
 
                     done(null, result);
                 });
         }
-    ], cb);
+    ], webtaskReturn);
 };

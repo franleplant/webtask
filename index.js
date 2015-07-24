@@ -33,14 +33,14 @@ export default function getWebtaskRunner(container, host = DEFAULT_HOST) {
             let uri = url.format({
                 protocol: PROTO,
                 host: host,
-                pathname: url.resolve(PATHNAME + container + '/', wt),
-                query: params
+                pathname: url.resolve(PATHNAME + container + '/', wt)
             });
 
 
             return new Promise((resolve, reject) => {
                 request
-                    .get(uri)
+                    .post(uri)
+                    .send(params)
                     .end((err, res) => {
                         if (!res.ok) {
                             reject(res.text);

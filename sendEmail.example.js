@@ -4,10 +4,10 @@ const runner = webtask('wt-franleplant-gmail_com-0');
 const sendEmail = runner('send-email');
 
 let params = {
+    from: 'bat@man.com',
     to: 'franleplant@gmail.com',
-    subject: 'webtask exercise',
-    message: 'hi!!!',
-    callback: 'franleplant@gmail.com'
+    subject: 'Webtask exercise',
+    message: 'Hi!!!'
 }
 
 sendEmail(params)
