@@ -27,7 +27,9 @@ describe('Webtask Runner', function() {
 
     it('makes the request to the correct url and return the right value', function(done){
         let runner = webtask(CONTAINER_MOCK, HOST_MOCK);
-        runner(WEBTASK_MOCK)
+        let helloWt = runner(WEBTASK_MOCK);
+
+        helloWt()
             .catch((err) => {
                 console.log(`the mocked https request failed with err: ${err}`);
                 done();

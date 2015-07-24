@@ -17,19 +17,19 @@ const PATHNAME = '/api/run/';
  *      to 'webtask.it.auth0.com'
  * @return {Function} Webtasks Runner for the specified container and host
  */
-export default function webtask(container, host = DEFAULT_HOST) {
+export default function getWebtaskRunner(container, host = DEFAULT_HOST) {
 
     /**
      * @param {String} wt The name of the webtask you want to run
      * @return {Function}
      */
-    return function runner(wt) {
+    return function webtask(wt) {
 
         /**
          * @param {Object} params - a hash of all the parameters that you want to pass to the webtask
          * @return {Promise}
          */
-        return function run(params) {
+        return function runWebtask(params) {
             let uri = url.format({
                 protocol: PROTO,
                 host: host,
@@ -37,8 +37,6 @@ export default function webtask(container, host = DEFAULT_HOST) {
                 query: params
             });
 
-
-            console.log(uri)
 
             return new Promise((resolve, reject) => {
                 request

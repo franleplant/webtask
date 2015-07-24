@@ -1,76 +1,54 @@
-var request = require('request')
-    , async = require('async')
-    , querystring = require('querystring');
+"use latest";
 
-var required_params = [
-    'callback', 'message', 'subject', 'to', 'SENDGRID_USER', 'SENDGRID_KEY'
+const request = require('request');
+const async = require('async');
+
+const required_params = [
+    'message', 'subject', 'to', 'SENDGRID_USER', 'SENDGRID_KEY'
 ];
 
-module.exports = function (context, req, res) {
+let response = (code, message) => ({code, message});
+
+module.exports = function sendEmailWebtask(context, webtaskReturn) {
+
+    let {SENDGRID_KEY, SENDGRID_USER, to, subject, message} = context.data;
+
     async.series([
-        function (callback) {
-            // Validate input parameters
-            if (!context.data.callback)
-                context.data.callback = req.headers['referer'];
-            for (var p in required_params)
-                if (!context.data[required_params[p]])
-                    return callback(
-                        error(400, new Error('The `' + required_params[p]
-                            + '` parameter must be provided.')));
-            callback();
+        function validateInputParameters(done) {
+            for (var p in required_params) {
+                if (!context.data[required_params[p]]) {
+                    return done(response(400, `The ${required_params[p]} parameter must be provided.`));
+                }
+            }
+            done();
         },
-        function (callback) {
+        function sendEmail(done) {
             // Send e-mail through Sendgrid
             request.post({
                 url: 'https://api.sendgrid.com/api/mail.send.json',
                 form: {
-                  'api_user': context.data.SENDGRID_USER,
-                  'api_key': context.data.SENDGRID_KEY,
-                  'to': context.data.to,
-                  'subject': '[Auth0 Webtask Sample] ' + context.data.subject,
+                  'api_user': SENDGRID_USER,
+                  'api_key': SENDGRID_KEY,
+                  'to': to,
+                  'subject': '[Auth0 Webtask Sample] ' + subject,
                   'from': 'samples@webtask.io',
-                  'text': context.data.message
-                    + '\n\n-------------\n'
-                    + '[Legal disclaimer added to every message]'
+                  'text': `${message}
+                            \n\n-------------\n
+                            '[Legal disclaimer added to every message]`
                 }
             }, function (error, sres, body) {
-                if (error)
-                    return callback(error);
-                var redirect_hash;
+                if (error) return done(JSON.stringify(error));
                 if (sres.statusCode === 200) {
-                    redirect_hash = querystring.stringify({
-                        status: 'success'
-                    });
+                    return done(null, response(200, 'Email delivered successfully'));
                 }
-                else {
-                    redirect_hash = querystring.stringify({
-                        status: 'error',
-                        sendgrid_http_status: sres.statusCode,
-                        error: body ? body.toString().substring(0, 200) : ''
-                    });
-                }
-                var redirect_url = context.data.callback + '#' + redirect_hash;
-                res.writeHead(302, { Location: redirect_url });
-                res.end();
-                return callback();
             });
         }
-    ], function (error) {
+    ], function (error, [_, result]) {
         if (error) {
-            try {
-                console.log('ERROR', error);
-                res.writeHead(error.code || 500);
-                res.end(error.stack || error.message || error.toString());
-            }
-            catch (e) {
-                // ignore
-            }
+            webtaskReturn(error);
+            return;
         }
-    });
-}
 
-function error(code, message) {
-    var e = new Error(message);
-    e.code = code;
-    return e;
+        webtaskReturn(null,  result);
+    });
 }
