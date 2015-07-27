@@ -2,13 +2,10 @@
 
 A simple [Webtask](https://webtask.io/) runner, it enables code communication between webtasks and Javascript code.
 
-## How to run you webtask
+## How to run your webtask
 
 ```sh
-# Create your webtask
-# Additonally you can create it from url
-# and you can pass in `--secret` s, check `wt create --help`
-# for more info
+# Create your webtask. Check `wt create --help` for more info and options.
 wt create  my-webtask.js
 
 #//=> https://webtask.it.auth0.com/api/run/my-container/my-webtask
@@ -25,19 +22,18 @@ const myWebtask = runner('my-webtask');
 // You can pass in parameters at run time
 let params = {
     webtask_no_cache: 1,
-    random_param1: "hi",
-    random_param2: "super hi",
-    ..
-    random_paramn: "super hi"
+    p_1: 'you can pass strings',
+    p_2: ['arrays', 1],
+    p_3: { anything: 'that is serializable' }
 }
 
-// Invoke you webtask
+// Invoke your webtask
 myWebtask(params)
     .then((res) => {
         console.log('SUCCESS!!!', res);
     })
     .catch((err) => {
-        console.log('Somethin went wront', err);
+        console.log('Something went wrong', err);
     })
 ```
 
@@ -45,13 +41,13 @@ myWebtask(params)
 
 You can check two examples:
 
-- Send Email: [webtask](webtask/send-email.js), [invocation](./sendEmail.example.js). Send a email; from, to, subject and message are parameterized.
-- Mongo Insert: [webtask](webtask/mongodb-insert.js), [invocation](./mongoInsert.example.js). Insert arbitrary data on a parameterized collection.
+- Send Email: ([webtask](webtasks/send-email.js), [invocation](./sendEmail.example.js)). Send a email; from, to, subject and message are parameterized.
+- Mongo Insert: ([webtask](webtasks/mongodb-insert.js), [invocation](./mongoInsert.example.js)). Insert arbitrary data on a parameterized collection.
 
 
 ## Internals
 
-This package is very simple, it uses ES6, Promises and Superagent to abstract from an HTTP POST.
+This package is very simple, it uses ES6, Promises and Superagent to create an abstraction layer over a HTTP POST.
 POST and JSON payload have been used to you can send arbitrary amount of data to your webtask.
 
 ## Development
