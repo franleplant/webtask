@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Webtask :)</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <style>
+            .fa-spin-custom, .glyphicon-spin {
+                -webkit-animation: spin 1000ms infinite linear;
+                animation: spin 1000ms infinite linear;
+            }
+            @-webkit-keyframes spin {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(359deg);
+                    transform: rotate(359deg);
+                }
+            }
+            @keyframes spin {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(359deg);
+                    transform: rotate(359deg);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="https://webtask.io" class="navbar-brand">
+                        <span class="symbol"><img src="/images/symbol.svg" style="height: 40px; margin-top: 2px;"></span>
+                        <span class="logotype"><img src="/images/logotype.svg" style="height: 18px; width: 82px;"></span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <h1>Back-End-less contact form powered by Webtask</h1>
+                    <p>
+                        Proof of concept, experimental, contact form powered by Webtask.
+                        No Back End, no deploy, no Dev-Ops, just code.
+                    </p>
+                    <p>
+                        This will insert the user contact request in a database and
+                        send an email notifying about it.
+                    </p>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <section id="react">
+                        Loading...
+                    </section>
+                </div>
+            </div>
+        </div>
+        <script src="bundle.js"></script>
+    </body>
+</html>
